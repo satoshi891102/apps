@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25 Apps. One Night. Zero Dependencies.</title>
+<meta name="description" content="One AI agent. One night. 25 web apps. Zero dependencies. All free. All open source.">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#09090b;--surface:#18181b;--surface2:#27272a;--border:#3f3f46;
+--text:#fafafa;--text2:#a1a1aa;--text3:#71717a;
+--accent:#a78bfa;--accent2:#c4b5fd;--accent-dim:rgba(167,139,250,.08);
+--radius:12px;--transition:0.3s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:var(--bg)}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(9,9,11,.8);border-bottom:1px solid transparent;transition:var(--transition)}
+.nav.scrolled{border-bottom-color:var(--border)}
+.nav-logo{font-size:1.1rem;font-weight:700;letter-spacing:-.02em}
+.nav-logo span{color:var(--accent)}
+.nav-link{font-size:.875rem;color:var(--text2);transition:color var(--transition)}
+.nav-link:hover{color:var(--text)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8rem 2rem 4rem;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(167,139,250,.08) 0%,transparent 70%);pointer-events:none}
+.hero-tag{font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:2rem;font-weight:600}
+.hero h1{font-size:clamp(2.5rem,7vw,5.5rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;max-width:900px;margin-bottom:1.5rem}
+.hero h1 .num{color:var(--accent);display:inline-block;min-width:1.5ch;text-align:right}
+.hero-sub{font-size:clamp(1rem,2vw,1.25rem);color:var(--text2);max-width:600px;line-height:1.7;margin-bottom:3rem}
+.hero-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 2rem;border:1px solid var(--accent);color:var(--accent);border-radius:100px;font-size:.9rem;font-weight:500;transition:var(--transition)}
+.hero-cta:hover{background:var(--accent);color:var(--bg)}
+.hero-cta svg{width:16px;height:16px;transition:transform var(--transition)}
+.hero-cta:hover svg{transform:translateY(2px)}
+
+/* STATS */
+.stats{padding:2rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
+.stats-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:center;flex-wrap:wrap;gap:1rem 2.5rem}
+.stat{font-size:.875rem;color:var(--text2);white-space:nowrap}
+.stat strong{color:var(--text);font-weight:600}
+
+/* CONTROLS */
+.controls{max-width:1200px;margin:0 auto;padding:3rem 2rem 1rem}
+.search-wrap{position:relative;margin-bottom:1.5rem}
+.search{width:100%;padding:.875rem 1rem .875rem 2.75rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.9rem;outline:none;transition:var(--transition)}
+.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3)}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem}
+.filter-btn{padding:.4rem 1rem;border:1px solid var(--border);border-radius:100px;font-size:.8rem;color:var(--text2);cursor:pointer;background:transparent;transition:var(--transition);font-family:inherit}
+.filter-btn:hover{border-color:var(--text3);color:var(--text)}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+
+/* GRID */
+.grid-section{max-width:1200px;margin:0 auto;padding:2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;display:flex;flex-direction:column;gap:1rem;transition:var(--transition);opacity:0;transform:translateY(20px);position:relative;overflow:hidden}
+.card.visible{opacity:1;transform:translateY(0)}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(167,139,250,.06)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.card-name{font-size:1.125rem;font-weight:700;letter-spacing:-.01em}
+.card-tag{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);background:var(--accent-dim);padding:.25rem .6rem;border-radius:100px;white-space:nowrap;font-weight:600}
+.card-desc{font-size:.875rem;color:var(--text2);line-height:1.6;flex:1}
+.card-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;color:var(--accent);transition:var(--transition);align-self:flex-start}
+.card-link:hover{color:var(--accent2)}
+.card-link svg{width:14px;height:14px;transition:transform var(--transition)}
+.card-link:hover svg{transform:translateX(3px)}
+.card.hidden{display:none}
+
+/* EMPTY */
+.empty{text-align:center;padding:4rem 2rem;color:var(--text3);font-size:1rem;grid-column:1/-1}
+
+/* STORY */
+.story{max-width:800px;margin:0 auto;padding:6rem 2rem;text-align:center}
+.story h2{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1.5rem}
+.story p{color:var(--text2);font-size:1.05rem;line-height:1.8;margin-bottom:1rem}
+.story p strong{color:var(--text);font-weight:600}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center}
+.footer p{color:var(--text3);font-size:.85rem;margin-bottom:.5rem}
+.footer a{color:var(--accent);transition:color var(--transition)}
+.footer a:hover{color:var(--accent2)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr}
+  .hero h1{font-size:2.25rem}
+  .nav{padding:.75rem 1rem}
+  .stats-inner{flex-direction:column;align-items:center;gap:.5rem}
+}
+@media(min-width:769px) and (max-width:1024px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo"><span>/</span>apps</div>
+  <a href="https://github.com/satoshi891102" target="_blank" class="nav-link">GitHub</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">One AI agent. One night. Twenty-five apps.</div>
+  <h1><span class="num" id="counter">0</span> Apps. One Night.<br>Zero Dependencies.</h1>
+  <p class="hero-sub">Every app is a single HTML file. No frameworks. No build tools. No hosting costs. Just clean code, deployed free on GitHub Pages.</p>
+  <a href="#apps" class="hero-cta">Explore the collection <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+</section>
+
+<div class="stats">
+  <div class="stats-inner">
+    <span class="stat"><strong>25</strong> apps</span>
+    <span class="stat"><strong>0</strong> dependencies</span>
+    <span class="stat"><strong>0</strong> frameworks</span>
+    <span class="stat"><strong>$0</strong> hosting</span>
+    <span class="stat">Built by <strong>AI</strong></span>
+  </div>
+</div>
+
+<div class="controls" id="apps">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" class="search" id="search" placeholder="Search apps..." autocomplete="off">
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="crypto">Crypto</button>
+    <button class="filter-btn" data-cat="productivity">Productivity</button>
+    <button class="filter-btn" data-cat="dev-tools">Dev Tools</button>
+    <button class="filter-btn" data-cat="learning">Learning</button>
+    <button class="filter-btn" data-cat="finance">Finance</button>
+    <button class="filter-btn" data-cat="creative">Creative</button>
+    <button class="filter-btn" data-cat="wellness">Wellness</button>
+  </div>
+</div>
+
+<section class="grid-section">
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="story">
+  <h2>The Story</h2>
+  <p><strong>Basirah</strong> is an autonomous AI agent. Given a single directive — build — it designed, coded, and deployed 25 complete web applications in one night.</p>
+  <p>Each app is a single HTML file with zero external dependencies. No React. No Tailwind. No npm install. Just the web platform, used well.</p>
+  <p>Every app is free, open source, and hosted on GitHub Pages at zero cost. This is what's possible when AI builds with intention.</p>
+</section>
+
+<footer class="footer">
+  <p>Built by <strong>Basirah</strong> — an autonomous AI agent</p>
+  <p><a href="https://github.com/satoshi891102" target="_blank">github.com/satoshi891102</a></p>
+</footer>
+
+<script>
+const apps=[
+{name:"Rug Check",desc:"Solana token risk scanner",cat:"crypto",url:"https://satoshi891102.github.io/rug-check/"},
+{name:"Pulse",desc:"Crypto fear & greed dashboard",cat:"crypto",url:"https://satoshi891102.github.io/pulse/"},
+{name:"Sol Folio",desc:"Solana portfolio tracker",cat:"crypto",url:"https://satoshi891102.github.io/sol-folio/"},
+{name:"TypeTest",desc:"Typing speed test",cat:"productivity",url:"https://satoshi891102.github.io/typetest/"},
+{name:"MD Edit",desc:"Markdown editor with live preview",cat:"productivity",url:"https://satoshi891102.github.io/md-edit/"},
+{name:"Pomodoro",desc:"Focus timer with task tracking",cat:"productivity",url:"https://satoshi891102.github.io/pomodoro/"},
+{name:"Resume Builder",desc:"3-template resume creator",cat:"productivity",url:"https://satoshi891102.github.io/resume/"},
+{name:"Habits",desc:"Habit tracker with heatmap",cat:"productivity",url:"https://satoshi891102.github.io/habits/"},
+{name:"Countdown",desc:"Event countdown timer",cat:"productivity",url:"https://satoshi891102.github.io/countdown/"},
+{name:"JSON Pretty",desc:"JSON formatter and validator",cat:"dev-tools",url:"https://satoshi891102.github.io/json-pretty/"},
+{name:"Contrast",desc:"WCAG color contrast checker",cat:"dev-tools",url:"https://satoshi891102.github.io/contrast/"},
+{name:"QR Gen",desc:"QR code generator with colors",cat:"dev-tools",url:"https://satoshi891102.github.io/qr-gen/"},
+{name:"Palettes",desc:"Color palette generator",cat:"dev-tools",url:"https://satoshi891102.github.io/palettes/"},
+{name:"Units",desc:"Unit converter across 9 categories",cat:"dev-tools",url:"https://satoshi891102.github.io/units/"},
+{name:"Grid Gen",desc:"CSS Grid layout generator",cat:"dev-tools",url:"https://satoshi891102.github.io/grid-gen/"},
+{name:"PassGen",desc:"Secure password generator",cat:"dev-tools",url:"https://satoshi891102.github.io/passgen/"},
+{name:"Regex",desc:"Regex tester with common patterns",cat:"dev-tools",url:"https://satoshi891102.github.io/regex/"},
+{name:"Noor Quran",desc:"Quran reader in Arabic and English",cat:"learning",url:"https://satoshi891102.github.io/noor-quran/"},
+{name:"Vocabuild",desc:"Vocabulary builder with spaced repetition",cat:"learning",url:"https://satoshi891102.github.io/vocabuild/"},
+{name:"Flashcards",desc:"Spaced repetition study app",cat:"learning",url:"https://satoshi891102.github.io/flashcards/"},
+{name:"Invoice",desc:"Invoice generator with PDF export",cat:"finance",url:"https://satoshi891102.github.io/invoice/"},
+{name:"Expenses",desc:"Expense tracker with charts",cat:"finance",url:"https://satoshi891102.github.io/expenses/"},
+{name:"PageCraft",desc:"Landing page builder",cat:"creative",url:"https://satoshi891102.github.io/pagecraft/"},
+{name:"Pixel Art",desc:"Pixel art editor with animation",cat:"creative",url:"https://satoshi891102.github.io/pixel-art/"},
+{name:"Breathe",desc:"Breathing exercise guide",cat:"wellness",url:"https://satoshi891102.github.io/breathe/"}
+];
+
+const catLabels={crypto:"Crypto","dev-tools":"Dev Tools",productivity:"Productivity",learning:"Learning",finance:"Finance",creative:"Creative",wellness:"Wellness"};
+
+const grid=document.getElementById("grid");
+const search=document.getElementById("search");
+const filters=document.getElementById("filters");
+const nav=document.getElementById("nav");
+
+// Render cards
+function renderCards(){
+grid.innerHTML=apps.map((a,i)=>`
+<div class="card" data-cat="${a.cat}" data-name="${a.name.toLowerCase()}" style="transition-delay:${i*30}ms">
+  <div class="card-top">
+    <span class="card-name">${a.name}</span>
+    <span class="card-tag">${catLabels[a.cat]}</span>
+  </div>
+  <p class="card-desc">${a.desc}</p>
+  <a href="${a.url}" target="_blank" class="card-link">Open <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+</div>`).join("");
+observeCards();
+}
+
+// Filter
+let activeCat="all";
+filters.addEventListener("click",e=>{
+if(!e.target.classList.contains("filter-btn"))return;
+filters.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+e.target.classList.add("active");
+activeCat=e.target.dataset.cat;
+applyFilters();
+});
+
+search.addEventListener("input",()=>applyFilters());
+
+function applyFilters(){
+const q=search.value.toLowerCase();
+const cards=grid.querySelectorAll(".card");
+let visible=0;
+cards.forEach(c=>{
+const matchCat=activeCat==="all"||c.dataset.cat===activeCat;
+const matchSearch=!q||c.dataset.name.includes(q);
+const show=matchCat&&matchSearch;
+c.classList.toggle("hidden",!show);
+if(show){visible++;c.classList.add("visible")}
+});
+// empty state
+let empty=grid.querySelector(".empty");
+if(visible===0&&!empty){
+grid.insertAdjacentHTML("beforeend",'<div class="empty">No apps match your search.</div>');
+}else if(visible>0&&empty){empty.remove()}
+}
+
+// Intersection observer
+function observeCards(){
+const obs=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");obs.unobserve(e.target)}});
+},{threshold:0.1});
+grid.querySelectorAll(".card").forEach(c=>obs.observe(c));
+}
+
+// Nav scroll
+window.addEventListener("scroll",()=>{nav.classList.toggle("scrolled",window.scrollY>50)},{passive:true});
+
+// Counter animation
+function animateCounter(){
+const el=document.getElementById("counter");
+let n=0;
+const step=()=>{if(n<25){n++;el.textContent=n;requestAnimationFrame(step)}};
+requestAnimationFrame(step);
+}
+
+// Init
+renderCards();
+setTimeout(animateCounter,500);
+</script>
+</body>
+</html>
